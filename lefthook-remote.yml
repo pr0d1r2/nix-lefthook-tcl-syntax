@@ -1,0 +1,12 @@
+---
+pre-commit:
+  commands:
+    tcl-syntax:
+      glob: "*.tcl"
+      run: timeout ${LEFTHOOK_TCL_SYNTAX_TIMEOUT:-30} lefthook-tcl-syntax {staged_files}
+
+pre-push:
+  commands:
+    tcl-syntax:
+      glob: "*.tcl"
+      run: timeout ${LEFTHOOK_TCL_SYNTAX_TIMEOUT:-30} lefthook-tcl-syntax {push_files}
