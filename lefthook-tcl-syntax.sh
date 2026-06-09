@@ -5,20 +5,20 @@
 # NOTE: sourced by writeShellApplication — no shebang or set needed.
 
 if [ $# -eq 0 ]; then
-    exit 0
+  exit 0
 fi
 
 failed=0
 for f in "$@"; do
-    [ -f "$f" ] || continue
-    case "$f" in
-        *.exp | *.tcl) ;;
-        *) continue ;;
-    esac
+  [ -f "$f" ] || continue
+  case "$f" in
+    *.exp | *.tcl) ;;
+    *) continue ;;
+  esac
 
-    rc=0
-    err="$(
-        tclsh /dev/stdin "$f" 2>&1 <<'TCL'
+  rc=0
+  err="$(
+    tclsh /dev/stdin "$f" 2>&1 <<'TCL'
 set path [lindex $argv 0]
 set fd [open $path r]
 set content [read $fd]
@@ -56,12 +56,12 @@ foreach line [split $content \n] {
 if {$errors > 0} { exit 1 }
 exit 0
 TCL
-    )" || rc=$?
+  )" || rc=$?
 
-    if [ "$rc" -ne 0 ]; then
-        printf '%s\n' "$err" >&2
-        failed=1
-    fi
+  if [ "$rc" -ne 0 ]; then
+    printf '%s\n' "$err" >&2
+    failed=1
+  fi
 done
 
 exit "$failed"
