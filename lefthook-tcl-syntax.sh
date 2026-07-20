@@ -36,9 +36,9 @@ foreach line [split $content \n] {
     incr lineno
     if {!$in_set_block && [regexp {^\s*set\s+\S+\s+\{} $line]} {
         set in_set_block 1
-        set set_depth 1
+        set opens [llength [regexp -all -inline {\{} $line]]
         set closes [llength [regexp -all -inline {\}} $line]]
-        set set_depth [expr {$set_depth - $closes}]
+        set set_depth [expr {$opens - $closes}]
         if {$set_depth <= 0} { set in_set_block 0 }
         continue
     }

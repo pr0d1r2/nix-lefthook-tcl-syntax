@@ -89,6 +89,17 @@ TCL
     assert_success
 }
 
+@test "hash in set block with nested braces on opening line fails" {
+    cat > "$TMP/bad.tcl" <<'TCL'
+set config {key {val}
+    # literal not a comment
+    key2 val2
+}
+TCL
+    run lefthook-tcl-syntax "$TMP/bad.tcl"
+    assert_failure
+}
+
 @test "multiple files: only bad one fails" {
     cat > "$TMP/good.tcl" <<'TCL'
 puts "ok"
