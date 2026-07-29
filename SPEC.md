@@ -42,7 +42,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 - V15: `packages.${system}.default` pins `runtimeInputs = [ pkgs.tcl ]` (Tcl, not statix) and reads `./lefthook-tcl-syntax.sh` verbatim
 - V16: CI runs lefthook pre-commit and pre-push (`--all-files`) on linux + macos
 - V17: All linters pass: shellcheck, shfmt (`-i 2`), nixfmt, statix, deadnix, yamllint, typos, editorconfig-checker, bats-parse, bats-unit, nix-flake-check, nix-no-embedded-shell, trailing-whitespace, missing-final-newline, git-conflict-markers, git-no-local-paths, file-size-check
-- V18: `config/lefthook/file_size_limits.yml` raises the `nix` limit to `10240` (15-wrapper flattened `flake.nix`) and the `md` limit to `8192` (full SPEC.md), keeping both under the size gate
+- V18: `config/lefthook/file_size_limits.yml` raises the `nix` limit to `10240` (15-wrapper flattened `flake.nix`), the `md` limit to `8192` (full SPEC.md), and the `lock` limit to `131072` (set-and-setting transitive deps inflate `flake.lock`), keeping all under the size gate
 
 ## §T Tasks
 
