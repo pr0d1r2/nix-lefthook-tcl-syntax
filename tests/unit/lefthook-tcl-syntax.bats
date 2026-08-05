@@ -7,6 +7,12 @@ setup() {
     TMP="$BATS_TEST_TMPDIR"
 }
 
+@test "remote hook includes both Tcl and Expect files" {
+    run grep -c 'glob: "*.{tcl,exp}"' lefthook-remote.yml
+    assert_success
+    assert_output 2
+}
+
 @test "no args exits 0" {
     run lefthook-tcl-syntax
     assert_success
