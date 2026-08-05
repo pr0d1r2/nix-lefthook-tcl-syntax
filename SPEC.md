@@ -18,7 +18,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 
 - I.cli: `lefthook-tcl-syntax file1.tcl [file2.exp ...]` — main binary; exit 1 if any file fails Tcl validation (blocks commit/push), exit 0 on pass or no matching files
 - I.env: `LEFTHOOK_TCL_SYNTAX_TIMEOUT` (seconds, default `30`) — wraps the hook invocation via `timeout` in `lefthook.yml`/`lefthook-remote.yml`
-- I.remote: `lefthook-remote.yml` — consumers add as a lefthook remote; pre-commit on `{staged_files}`, pre-push on `{push_files}`, both globbed to `*.tcl`
+- I.remote: `lefthook-remote.yml` — consumers add as a lefthook remote; pre-commit on `{staged_files}`, pre-push on `{push_files}`, both globbed to `*.{tcl,exp}`
 - I.flake: `packages.${system}.default` — the `lefthook-tcl-syntax` Nix pkg output
 - I.devshell: `devShells.${system}.default` (direnv `use flake`, `dev.sh` shellHook) + `.#ci` (sets `BATS_LIB_PATH`) — both bundle the self pkg plus 15 inlined lefthook wrapper binaries
 - I.ci: `.github/workflows/ci.yml` — linux + macos via `nix-lefthook-ci-action`; `.github/workflows/update-pins.yml` — automated flake input pin refresh

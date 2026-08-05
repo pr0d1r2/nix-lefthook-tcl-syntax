@@ -45,7 +45,7 @@ Add to `lefthook.yml`:
 pre-commit:
   commands:
     tcl-syntax:
-      glob: "*.tcl"
+      glob: "*.{tcl,exp}"
       run: timeout ${LEFTHOOK_TCL_SYNTAX_TIMEOUT:-30} lefthook-tcl-syntax {staged_files}
 ```
 
