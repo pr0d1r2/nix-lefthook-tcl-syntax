@@ -46,6 +46,12 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 
 ## §T Tasks
 
+## §B Bugs
+
+| id | date | cause | fix |
+|----|------|-------|-----|
+| B1 | 2026-08-04 | Flake manifest guard rejected outer `let` bindings in the outputs body | Inlined system generation and moved fragment bindings into individual outputs |
+
 | id | status | task | cites |
 |----|--------|------|-------|
 | T1 | x | core checker: `tclsh` `info complete` validation per `.tcl`/`.exp` file | V1,V9,I.cli |
