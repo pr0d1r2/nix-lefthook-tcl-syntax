@@ -21,16 +21,39 @@
       set-and-setting,
       ...
     }:
-    set-and-setting.lib.mkConsumerFlake {
-      inherit self nixpkgs set-and-setting;
-      fragments = [
-        "base"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
+    let
+      systems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
       ];
-      src = ./.;
+      scaffold = set-and-setting.lib.mkConsumerFlake {
+        inherit self nixpkgs set-and-setting;
+        fragments = [
+          "base"
+          "nix"
+          "shell"
+          "ascii"
+          "markdown"
+          "yaml"
+        ];
+        src = ./.;
+      };
+      checker = system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        pkgs.writeShellApplication {
+          name = "lefthook-tcl-syntax";
+          runtimeInputs = [ pkgs.tcl ];
+          text = builtins.readFile ./lefthook-tcl-syntax.sh;
+        };
+    in
+    scaffold
+    // {
+      packages = scaffold.packages // (nixpkgs.lib.genAttrs systems (system: {
+        default = checker system;
+      }));
     };
 }
