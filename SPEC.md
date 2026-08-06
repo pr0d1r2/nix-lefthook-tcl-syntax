@@ -51,6 +51,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | id | date | cause | fix |
 |----|------|-------|-----|
 | B1 | 2026-08-04 | Flake manifest guard rejected outer `let` bindings in the outputs body | Inlined system generation and moved fragment bindings into individual outputs |
+| B2 | 2026-08-06 | Custom package output shallow-merged over the scaffold and removed its `setting` package | Merge each system's custom package with the existing scaffold package set |
 
 | id | status | task | cites |
 |----|--------|------|-------|
