@@ -33,8 +33,28 @@
         "yaml"
       ];
       src = ./.;
-    })
+      }
+    )
     // {
+      checks = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
+        system:
+        (set-and-setting.lib.mkConsumerFlake {
+          inherit self nixpkgs set-and-setting;
+          fragments = [ "base" "actions" "nix" "shell" "ascii" "markdown" "yaml" ];
+          src = ./.;
+        }).checks.${system}
+        // {
+          # set-and-setting's actionlint helper currently passes a scalar
+          # regex to sourceByRegex; Nix requires a list of regexes.
+          actionlint = nixpkgs.legacyPackages.${system}.runCommand "actionlint-check" {
+            nativeBuildInputs = [ nixpkgs.legacyPackages.${system}.actionlint ];
+          } ''
+            cd ${./.}
+            actionlint $(find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) -print)
+            touch $out
+          '';
+        }
+      );
       packages =
         let
           scaffold = set-and-setting.lib.mkConsumerFlake {
@@ -50,15 +70,9 @@
             ];
             src = ./.;
           };
-          systems = [
-            "aarch64-darwin"
-            "x86_64-darwin"
-            "x86_64-linux"
-            "aarch64-linux"
-          ];
         in
         scaffold.packages
-        // (nixpkgs.lib.genAttrs systems (
+        // (nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
           system:
           scaffold.packages.${system}
           // {

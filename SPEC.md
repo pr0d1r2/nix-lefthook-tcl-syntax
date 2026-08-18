@@ -54,6 +54,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B2 | 2026-08-06 | Custom package output shallow-merged over the scaffold and removed its `setting` package | Merge each system's custom package with the existing scaffold package set |
 | B3 | 2026-08-06 | Nix formatter check rejected inconsistent indentation in the custom package fragment list | Format the fragment list to the repository's Nix style |
 | B4 | 2026-08-18 | Materialized lefthook configuration drifted from the pinned standard fragments and omitted actionlint hooks | Regenerate lefthook.yml from the pinned fragments |
+| B5 | 2026-08-18 | Pinned actionlint check passed a scalar workflow regex to Nix's list-valued `sourceByRegex` API; the linter-coverage config was also absent from the consumer tree | Override the broken actionlint derivation with an equivalent direct check and add the required coverage exemptions |
 
 | id | status | task | cites |
 |----|--------|------|-------|
