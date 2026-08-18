@@ -25,6 +25,7 @@
       inherit self nixpkgs set-and-setting;
       fragments = [
         "base"
+        "actions"
         "nix"
         "shell"
         "ascii"
@@ -40,6 +41,7 @@
             inherit self nixpkgs set-and-setting;
             fragments = [
               "base"
+              "actions"
               "nix"
               "shell"
               "ascii"
