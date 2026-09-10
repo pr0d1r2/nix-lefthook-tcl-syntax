@@ -56,6 +56,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B4 | 2026-08-18 | Materialized lefthook configuration drifted from the pinned standard fragments and omitted actionlint hooks | Regenerate lefthook.yml from the pinned fragments |
 | B5 | 2026-08-18 | Pinned actionlint check passed a scalar workflow regex to Nix's list-valued `sourceByRegex` API; the linter-coverage config was also absent from the consumer tree | Override the broken actionlint derivation with an equivalent direct check and add the required coverage exemptions |
 | B6 | 2026-08-18 | The actionlint workaround left the outer consumer-flake argument set misindented, so the pinned nixfmt check rejected `flake.nix` | Align the closing attribute-set brace with the consumer-flake expression |
+| B7 | 2026-09-10 | The generated actionlint hook was present, but its delegated `actionlint` executable was absent from consumer dev shells, causing CI to exit 127 after the checks passed | Add actionlint to every consumer dev shell's native build inputs |
 
 | id | status | task | cites |
 |----|--------|------|-------|

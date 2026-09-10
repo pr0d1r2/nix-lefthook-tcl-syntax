@@ -35,6 +35,33 @@
       src = ./.;
     })
     // {
+      devShells =
+        nixpkgs.lib.mapAttrs
+          (
+            system: shells:
+            nixpkgs.lib.mapAttrs (
+              _: shell:
+              nixpkgs.legacyPackages.${system}.mkShell {
+                inputsFrom = [ shell ];
+                packages = [ nixpkgs.legacyPackages.${system}.actionlint ];
+              }
+            ) shells
+          )
+          (set-and-setting.lib.mkConsumerFlake {
+            inherit self nixpkgs set-and-setting;
+            fragments = [
+              "base"
+              "actions"
+              "nix"
+              "shell"
+              "ascii"
+              "markdown"
+              "yaml"
+            ];
+            src = ./.;
+          }).devShells;
+    }
+    // {
       checks = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (
         system:
         (set-and-setting.lib.mkConsumerFlake {
