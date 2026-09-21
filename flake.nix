@@ -1,5 +1,5 @@
 {
-  description = "CHANGEME";
+  description = "Lefthook-compatible Tcl syntax checker";
 
   nixConfig = {
     extra-substituters = [ "https://pr0d1r2.cachix.org" ];

@@ -58,6 +58,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B6 | 2026-08-18 | The actionlint workaround left the outer consumer-flake argument set misindented, so the pinned nixfmt check rejected `flake.nix` | Align the closing attribute-set brace with the consumer-flake expression |
 | B7 | 2026-09-10 | The generated actionlint hook was present, but its delegated `actionlint` executable was absent from consumer dev shells, causing CI to exit 127 after the checks passed | Add actionlint to every consumer dev shell's native build inputs |
 | B8 | 2026-09-21 | Unit-test teardown deleted the temporary repository while the test process was still inside it, so Bats file cleanup failed after otherwise passing tests | Return to the test directory before removing the temporary repository |
+| B9 | 2026-09-21 | Guardrails rejected the placeholder `CHANGEME` flake description even though the flake checks passed | Set a descriptive project name in both flake manifests |
 
 | id | status | task | cites |
 |----|--------|------|-------|
