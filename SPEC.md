@@ -59,6 +59,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B7 | 2026-09-10 | The generated actionlint hook was present, but its delegated `actionlint` executable was absent from consumer dev shells, causing CI to exit 127 after the checks passed | Add actionlint to every consumer dev shell's native build inputs |
 | B8 | 2026-09-21 | Unit-test teardown deleted the temporary repository while the test process was still inside it, so Bats file cleanup failed after otherwise passing tests | Return to the test directory before removing the temporary repository |
 | B9 | 2026-09-21 | Guardrails rejected the placeholder `CHANGEME` flake description even though the flake checks passed | Set a descriptive project name in both flake manifests |
+| B10 | 2026-09-21 | Guardrails detected that the tracked lefthook configuration had drifted from the pinned fragment assembly and referenced an unavailable `lefthook-tdd-order-bats` hook | Regenerate `lefthook.yml` from the pinned flake inputs |
 
 | id | status | task | cites |
 |----|--------|------|-------|
