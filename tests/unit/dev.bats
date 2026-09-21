@@ -20,6 +20,7 @@ SH
 }
 
 teardown() {
+    cd "$BATS_TEST_DIRNAME"
     rm -rf "$TMPDIR"
 }
 
