@@ -4,7 +4,13 @@ setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
-    TMP="$BATS_TEST_TMPDIR"
+    TEST_TMPDIR="$(mktemp -d)"
+    TMP="$TEST_TMPDIR"
+}
+
+teardown() {
+    cd "$BATS_TEST_DIRNAME"
+    rm -rf "$TEST_TMPDIR"
 }
 
 @test "remote hook includes both Tcl and Expect files" {
