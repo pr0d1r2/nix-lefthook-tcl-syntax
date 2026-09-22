@@ -60,6 +60,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B8 | 2026-09-21 | Unit-test teardown deleted the temporary repository while the test process was still inside it, so Bats file cleanup failed after otherwise passing tests | Return to the test directory before removing the temporary repository |
 | B9 | 2026-09-21 | Guardrails rejected the placeholder `CHANGEME` flake description even though the flake checks passed | Set a descriptive project name in both flake manifests |
 | B10 | 2026-09-21 | Guardrails detected that the tracked lefthook configuration had drifted from the pinned fragment assembly and referenced an unavailable `lefthook-tdd-order-bats` hook | Regenerate `lefthook.yml` from the pinned flake inputs |
+| B11 | 2026-09-22 | Test overwrote Bats' `TMPDIR` and removed the runner temp tree | Use `TEST_TMPDIR` for test data |
 
 | id | status | task | cites |
 |----|--------|------|-------|
