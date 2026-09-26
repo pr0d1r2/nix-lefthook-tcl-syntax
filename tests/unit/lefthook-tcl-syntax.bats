@@ -1,9 +1,6 @@
 #!/usr/bin/env bats
 
 setup() {
-    load "${BATS_LIB_PATH}/bats-support/load.bash"
-    load "${BATS_LIB_PATH}/bats-assert/load.bash"
-
     TCL_SYNTAX_TEST_TMPDIR="$(mktemp -d)"
     TCL_SYNTAX_TMP="$TCL_SYNTAX_TEST_TMPDIR"
 }
@@ -15,24 +12,24 @@ teardown() {
 
 @test "remote hook includes both Tcl and Expect files" {
     run grep -c 'glob: "*.{tcl,exp}"' lefthook-remote.yml
-    assert_success
-    assert_output 2
+    [ "$status" -eq 0 ]
+    [ "$output" = 2 ]
 }
 
 @test "no args exits 0" {
     run lefthook-tcl-syntax
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "non-existent file is skipped" {
     run lefthook-tcl-syntax /nonexistent/file.tcl
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "non-tcl files are skipped" {
     echo 'hello' > "$TCL_SYNTAX_TMP/readme.md"
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/readme.md"
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "complete tcl script passes" {
@@ -42,7 +39,7 @@ proc hello {} {
 }
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl"
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "unclosed brace fails" {
@@ -51,7 +48,7 @@ proc hello {} {
     puts "hello"
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }
 
 @test "unclosed bracket fails" {
@@ -59,7 +56,7 @@ TCL
 set x [expr 1 + 2
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }
 
 @test "unclosed quote fails" {
@@ -67,7 +64,7 @@ TCL
 set x "hello
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }
 
 @test ".exp files are accepted" {
@@ -75,7 +72,7 @@ TCL
 expect "hello"
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.exp"
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "hash inside set brace block fails" {
@@ -87,7 +84,7 @@ set mylist {
 }
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }
 
 @test "hash inside proc body is fine" {
@@ -98,7 +95,7 @@ proc hello {} {
 }
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl"
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "hash in set block with nested braces on opening line fails" {
@@ -109,7 +106,7 @@ set config {key {val}
 }
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }
 
 @test "multiple files: only bad one fails" {
@@ -120,5 +117,5 @@ TCL
 proc hello {} {
 TCL
     run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl" "$TCL_SYNTAX_TMP/bad.tcl"
-    assert_failure
+    [ "$status" -ne 0 ]
 }

@@ -63,6 +63,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B11 | 2026-09-22 | Test removed Bats' temp tree | Use `TEST_TMPDIR` |
 | B12 | 2026-09-22 | Tcl tests assumed unset `BATS_TEST_TMPDIR` | Allocate a test temp directory |
 | B13 | 2026-09-26 | Parallel Bats execution collided with generic temporary-directory variable names used by the Tcl tests | Use uniquely scoped Tcl test temporary-directory variables |
+| B14 | 2026-09-26 | Tcl unit tests loaded bats-support and bats-assert through unset `BATS_LIB_PATH`, so every setup failed in guardrails | Use Bats built-in status and output assertions instead of an environment-specific helper-library path |
 
 | id | status | task | cites |
 |----|--------|------|-------|
