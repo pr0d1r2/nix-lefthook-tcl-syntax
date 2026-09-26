@@ -62,6 +62,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B10 | 2026-09-21 | Guardrails detected that the tracked lefthook configuration had drifted from the pinned fragment assembly and referenced an unavailable `lefthook-tdd-order-bats` hook | Regenerate `lefthook.yml` from the pinned flake inputs |
 | B11 | 2026-09-22 | Test removed Bats' temp tree | Use `TEST_TMPDIR` |
 | B12 | 2026-09-22 | Tcl tests assumed unset `BATS_TEST_TMPDIR` | Allocate a test temp directory |
+| B13 | 2026-09-26 | Parallel Bats execution collided with generic temporary-directory variable names used by the Tcl tests | Use uniquely scoped Tcl test temporary-directory variables |
 
 | id | status | task | cites |
 |----|--------|------|-------|
