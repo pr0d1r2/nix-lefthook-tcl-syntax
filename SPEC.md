@@ -56,6 +56,14 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B4 | 2026-08-18 | Materialized lefthook configuration drifted from the pinned standard fragments and omitted actionlint hooks | Regenerate lefthook.yml from the pinned fragments |
 | B5 | 2026-08-18 | Pinned actionlint check passed a scalar workflow regex to Nix's list-valued `sourceByRegex` API; the linter-coverage config was also absent from the consumer tree | Override the broken actionlint derivation with an equivalent direct check and add the required coverage exemptions |
 | B6 | 2026-08-18 | The actionlint workaround left the outer consumer-flake argument set misindented, so the pinned nixfmt check rejected `flake.nix` | Align the closing attribute-set brace with the consumer-flake expression |
+| B7 | 2026-09-10 | The generated actionlint hook was present, but its delegated `actionlint` executable was absent from consumer dev shells, causing CI to exit 127 after the checks passed | Add actionlint to every consumer dev shell's native build inputs |
+| B8 | 2026-09-21 | Unit-test teardown deleted the temporary repository while the test process was still inside it, so Bats file cleanup failed after otherwise passing tests | Return to the test directory before removing the temporary repository |
+| B9 | 2026-09-21 | Guardrails rejected the placeholder `CHANGEME` flake description even though the flake checks passed | Set a descriptive project name in both flake manifests |
+| B10 | 2026-09-21 | Guardrails detected that the tracked lefthook configuration had drifted from the pinned fragment assembly and referenced an unavailable `lefthook-tdd-order-bats` hook | Regenerate `lefthook.yml` from the pinned flake inputs |
+| B11 | 2026-09-22 | Test removed Bats' temp tree | Use `TEST_TMPDIR` |
+| B12 | 2026-09-22 | Tcl tests assumed unset `BATS_TEST_TMPDIR` | Allocate a test temp directory |
+| B13 | 2026-09-26 | Parallel Bats execution collided with generic temporary-directory variable names used by the Tcl tests | Use uniquely scoped Tcl test temporary-directory variables |
+| B14 | 2026-09-26 | Tcl unit tests loaded bats-support and bats-assert through unset `BATS_LIB_PATH`, so every setup failed in guardrails | Use Bats built-in status and output assertions instead of an environment-specific helper-library path |
 
 | id | status | task | cites |
 |----|--------|------|-------|

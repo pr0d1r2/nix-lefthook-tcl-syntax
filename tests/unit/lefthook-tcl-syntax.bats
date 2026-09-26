@@ -1,118 +1,121 @@
 #!/usr/bin/env bats
 
 setup() {
-    load "${BATS_LIB_PATH}/bats-support/load.bash"
-    load "${BATS_LIB_PATH}/bats-assert/load.bash"
+    TCL_SYNTAX_TEST_TMPDIR="$(mktemp -d)"
+    TCL_SYNTAX_TMP="$TCL_SYNTAX_TEST_TMPDIR"
+}
 
-    TMP="$BATS_TEST_TMPDIR"
+teardown() {
+    cd "$BATS_TEST_DIRNAME"
+    rm -rf "$TCL_SYNTAX_TEST_TMPDIR"
 }
 
 @test "remote hook includes both Tcl and Expect files" {
     run grep -c 'glob: "*.{tcl,exp}"' lefthook-remote.yml
-    assert_success
-    assert_output 2
+    [ "$status" -eq 0 ]
+    [ "$output" = 2 ]
 }
 
 @test "no args exits 0" {
     run lefthook-tcl-syntax
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "non-existent file is skipped" {
     run lefthook-tcl-syntax /nonexistent/file.tcl
-    assert_success
+    [ "$status" -eq 0 ]
 }
 
 @test "non-tcl files are skipped" {
-    echo 'hello' > "$TMP/readme.md"
-    run lefthook-tcl-syntax "$TMP/readme.md"
-    assert_success
+    echo 'hello' > "$TCL_SYNTAX_TMP/readme.md"
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/readme.md"
+    [ "$status" -eq 0 ]
 }
 
 @test "complete tcl script passes" {
-    cat > "$TMP/good.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/good.tcl" <<'TCL'
 proc hello {} {
     puts "hello"
 }
 TCL
-    run lefthook-tcl-syntax "$TMP/good.tcl"
-    assert_success
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl"
+    [ "$status" -eq 0 ]
 }
 
 @test "unclosed brace fails" {
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 proc hello {} {
     puts "hello"
 TCL
-    run lefthook-tcl-syntax "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
 
 @test "unclosed bracket fails" {
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 set x [expr 1 + 2
 TCL
-    run lefthook-tcl-syntax "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
 
 @test "unclosed quote fails" {
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 set x "hello
 TCL
-    run lefthook-tcl-syntax "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
 
 @test ".exp files are accepted" {
-    cat > "$TMP/good.exp" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/good.exp" <<'TCL'
 expect "hello"
 TCL
-    run lefthook-tcl-syntax "$TMP/good.exp"
-    assert_success
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.exp"
+    [ "$status" -eq 0 ]
 }
 
 @test "hash inside set brace block fails" {
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 set mylist {
     item1
     # this is not a comment
     item2
 }
 TCL
-    run lefthook-tcl-syntax "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
 
 @test "hash inside proc body is fine" {
-    cat > "$TMP/good.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/good.tcl" <<'TCL'
 proc hello {} {
     # this is a real comment
     puts "hello"
 }
 TCL
-    run lefthook-tcl-syntax "$TMP/good.tcl"
-    assert_success
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl"
+    [ "$status" -eq 0 ]
 }
 
 @test "hash in set block with nested braces on opening line fails" {
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 set config {key {val}
     # literal not a comment
     key2 val2
 }
 TCL
-    run lefthook-tcl-syntax "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
 
 @test "multiple files: only bad one fails" {
-    cat > "$TMP/good.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/good.tcl" <<'TCL'
 puts "ok"
 TCL
-    cat > "$TMP/bad.tcl" <<'TCL'
+    cat > "$TCL_SYNTAX_TMP/bad.tcl" <<'TCL'
 proc hello {} {
 TCL
-    run lefthook-tcl-syntax "$TMP/good.tcl" "$TMP/bad.tcl"
-    assert_failure
+    run lefthook-tcl-syntax "$TCL_SYNTAX_TMP/good.tcl" "$TCL_SYNTAX_TMP/bad.tcl"
+    [ "$status" -ne 0 ]
 }
