@@ -1,9 +1,6 @@
 #!/usr/bin/env bats
 
 setup() {
-    load "${BATS_LIB_PATH}/bats-support/load.bash"
-    load "${BATS_LIB_PATH}/bats-assert/load.bash"
-
     TEST_TMPDIR="$(mktemp -d)"
     git init "$TEST_TMPDIR/repo" >/dev/null 2>&1
     mkdir -p "$TEST_TMPDIR/repo/.git/hooks"
@@ -27,8 +24,8 @@ teardown() {
 @test "sets BATS_LIB_PATH from placeholder" {
     cd "$TEST_TMPDIR/repo"
     run bash -c 'unset BATS_LIB_PATH; source "$1"; echo "$BATS_LIB_PATH"' -- "$TEST_TMPDIR/dev.sh"
-    assert_success
-    assert_output "/test/lib/share/bats"
+    [ "$status" -eq 0 ]
+    [ "$output" = "/test/lib/share/bats" ]
 }
 
 @test "runs lefthook install when hooks are missing" {
@@ -40,9 +37,9 @@ teardown() {
     export LEFTHOOK_LOG="$TEST_TMPDIR/log"
     # shellcheck disable=SC1091
     source "$TEST_TMPDIR/dev.sh"
-    assert [ -f "$LEFTHOOK_LOG" ]
+    [ -f "$LEFTHOOK_LOG" ]
     run cat "$LEFTHOOK_LOG"
-    assert_output "lefthook install"
+    [ "$output" = "lefthook install" ]
 }
 
 @test "skips lefthook install when hooks exist" {
@@ -53,5 +50,5 @@ teardown() {
     export LEFTHOOK_LOG="$TEST_TMPDIR/log"
     # shellcheck disable=SC1091
     source "$TEST_TMPDIR/dev.sh"
-    assert [ ! -f "$LEFTHOOK_LOG" ]
+    [ ! -f "$LEFTHOOK_LOG" ]
 }
