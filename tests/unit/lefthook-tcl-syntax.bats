@@ -11,7 +11,7 @@ teardown() {
 }
 
 @test "remote hook includes both Tcl and Expect files" {
-    run grep -c 'glob: "*.{tcl,exp}"' lefthook-remote.yml
+    run grep -Fc 'glob: "*.{tcl,exp}"' "$BATS_TEST_DIRNAME/../../lefthook-remote.yml"
     [ "$status" -eq 0 ]
     [ "$output" = 2 ]
 }

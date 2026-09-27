@@ -49,6 +49,16 @@
                 ];
               }
             ) shells
+            // {
+              ci = nixpkgs.legacyPackages.${system}.mkShell {
+                inputsFrom = [ shells.default ];
+                packages = [
+                  nixpkgs.legacyPackages.${system}.actionlint
+                  nixpkgs.legacyPackages.${system}.bats
+                  self.packages.${system}.default
+                ];
+              };
+            }
           )
           (set-and-setting.lib.mkConsumerFlake {
             inherit self nixpkgs set-and-setting;
