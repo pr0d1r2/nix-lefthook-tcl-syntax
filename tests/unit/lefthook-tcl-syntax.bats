@@ -1,14 +1,24 @@
 #!/usr/bin/env bats
 
+# Test THIS repository's package, not whatever `lefthook-tcl-syntax` the
+# dev shell or the caller's PATH happens to carry: the standard's shell has
+# no Tcl fragment, so without this the suite exercised a stale copy (or
+# nothing at all).
+setup_file() {
+    TCL_SYNTAX_OUT="$(nix build "$BATS_TEST_DIRNAME/../..#default" --no-link --print-out-paths)"
+    export TCL_SYNTAX_OUT
+}
+
 setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
     TMP="$BATS_TEST_TMPDIR"
+    PATH="$TCL_SYNTAX_OUT/bin:$PATH"
 }
 
 @test "remote hook includes both Tcl and Expect files" {
-    run grep -c 'glob: "*.{tcl,exp}"' lefthook-remote.yml
+    run grep -cF 'glob: "*.{tcl,exp}"' lefthook-remote.yml
     assert_success
     assert_output 2
 }
