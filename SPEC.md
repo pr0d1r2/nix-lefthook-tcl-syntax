@@ -42,7 +42,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 - V15: `packages.${system}.default` pins `runtimeInputs = [ pkgs.tcl ]` (Tcl, not statix) and reads `./lefthook-tcl-syntax.sh` verbatim
 - V16: CI runs lefthook pre-commit and pre-push (`--all-files`) on linux + macos
 - V17: All linters pass: shellcheck, shfmt (`-i 2`), nixfmt, statix, deadnix, yamllint, typos, editorconfig-checker, bats-parse, bats-unit, nix-flake-check, nix-no-embedded-shell, trailing-whitespace, missing-final-newline, git-conflict-markers, git-no-local-paths, file-size-check
-- V18: `config/lefthook/file_size_limits.yml` raises the `nix` limit to `10240` (15-wrapper flattened `flake.nix`), the `md` limit to `8192` (full SPEC.md), and the `lock` limit to `131072` (set-and-setting transitive deps inflate `flake.lock`), keeping all under the size gate
+- V18: `config/lefthook/file_size_limits.yml` raises the `nix` limit to `10240` (15-wrapper flattened `flake.nix`), the `md` limit to `16384` (full SPEC.md), and the `lock` limit to `131072` (set-and-setting transitive deps inflate `flake.lock`), keeping all under the size gate
 
 ## §T Tasks
 
@@ -56,6 +56,9 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B4 | 2026-08-18 | Materialized lefthook configuration drifted from the pinned standard fragments and omitted actionlint hooks | Regenerate lefthook.yml from the pinned fragments |
 | B5 | 2026-08-18 | Pinned actionlint check passed a scalar workflow regex to Nix's list-valued `sourceByRegex` API; the linter-coverage config was also absent from the consumer tree | Override the broken actionlint derivation with an equivalent direct check and add the required coverage exemptions |
 | B6 | 2026-08-18 | The actionlint workaround left the outer consumer-flake argument set misindented, so the pinned nixfmt check rejected `flake.nix` | Align the closing attribute-set brace with the consumer-flake expression |
+| B7 | 2026-09-27 | `lefthook.yml` was committed although gitignored, so the tending loop saw contradictory guard evidence and refused every writer; the flake still carried the B5 actionlint override and an unused `flake-outputs.nix` | Untrack `lefthook.yml`, drop the override and `flake-outputs.nix`, use the plain `mkConsumerFlake` form, bump the standard, add `[*.sh] switch_case_indent = true` |
+| B8 | 2026-09-27 | `dev.bats` reassigned and removed `TMPDIR`, killing the shared bats run dir; the remote-hook glob test used a regex that BSD grep reads differently | Use a private `TEST_TEMP`; match the glob with `grep -F` |
+| B9 | 2026-09-27 | `agent/set/skills/linter.md` had no extension table for the pre-push `linter-coverage` check | Add the table; raise the `md` limit to 16384 |
 
 | id | status | task | cites |
 |----|--------|------|-------|
