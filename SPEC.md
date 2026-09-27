@@ -65,6 +65,7 @@ Lefthook-compatible Tcl syntax checker. Validates every staged `.tcl`/`.exp` fil
 | B13 | 2026-09-26 | Parallel Bats execution collided with generic temporary-directory variable names used by the Tcl tests | Use uniquely scoped Tcl test temporary-directory variables |
 | B14 | 2026-09-26 | Tcl unit tests loaded bats-support and bats-assert through unset `BATS_LIB_PATH`, so every setup failed in guardrails | Use Bats built-in status and output assertions instead of an environment-specific helper-library path |
 | B15 | 2026-09-26 | Dev-shell unit tests still loaded bats-support and bats-assert through an unavailable `BATS_LIB_PATH`, so every setup failed in guardrails | Use Bats built-in status, output, and test assertions so the tests are self-contained |
+| B16 | 2026-09-26 | Dev shells did not expose the project’s `lefthook-tcl-syntax` package, so positive unit tests failed with command-not-found status 127 | Add the default checker package to every generated dev shell |
 
 | id | status | task | cites |
 |----|--------|------|-------|

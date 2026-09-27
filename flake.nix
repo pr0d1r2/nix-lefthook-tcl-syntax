@@ -43,7 +43,10 @@
               _: shell:
               nixpkgs.legacyPackages.${system}.mkShell {
                 inputsFrom = [ shell ];
-                packages = [ nixpkgs.legacyPackages.${system}.actionlint ];
+                packages = [
+                  nixpkgs.legacyPackages.${system}.actionlint
+                  self.packages.${system}.default
+                ];
               }
             ) shells
           )
