@@ -13,18 +13,19 @@ setup() {
     load "${BATS_LIB_PATH}/bats-support/load.bash"
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
+    REPO_ROOT="$BATS_TEST_DIRNAME/../.."
     TMP="$BATS_TEST_TMPDIR"
     PATH="$TCL_SYNTAX_OUT/bin:$PATH"
 }
 
 @test "remote hook includes both Tcl and Expect files" {
-    run grep -cF 'glob: "*.{tcl,exp}"' lefthook-remote.yml
+    run grep -cF 'glob: "*.{tcl,exp}"' "$REPO_ROOT/lefthook-remote.yml"
     assert_success
     assert_output 2
 }
 
 @test "CI guardrails workflow is pinned to a full commit SHA" {
-    run grep -F '    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@a980e77cfb83c494c83c398b977f337b1d20f94d' .github/workflows/ci.yml
+    run grep -F '    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@a980e77cfb83c494c83c398b977f337b1d20f94d' "$REPO_ROOT/.github/workflows/ci.yml"
     assert_success
 }
 
