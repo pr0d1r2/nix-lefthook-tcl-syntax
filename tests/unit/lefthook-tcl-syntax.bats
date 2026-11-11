@@ -28,7 +28,9 @@ setup() {
     run grep -F '    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@' "$REPO_ROOT/.github/workflows/ci.yml"
     assert_success
 
-    pin="${output##*@}"
+    pin="${output%%#*}"
+    pin="${pin##*@}"
+    pin="${pin//[[:space:]]/}"
     [[ "$pin" =~ ^[0-9a-f]{40}$ ]]
 }
 
