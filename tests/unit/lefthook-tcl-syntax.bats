@@ -31,8 +31,8 @@ setup() {
     pin="${output%%#*}"
     pin="${pin##*@}"
     pin="$(printf '%s' "$pin" | tr -d '[:space:]')"
-    run grep -Eq '^[0-9a-f]{40}$' <<< "$pin"
-    assert_success
+    run printf '%s\n' "$pin"
+    assert_output -e '^[0-9a-f]{40}$'
 }
 
 @test "no args exits 0" {
