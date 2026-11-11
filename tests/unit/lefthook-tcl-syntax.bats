@@ -28,10 +28,11 @@ setup() {
     run grep -F '    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@' "$REPO_ROOT/.github/workflows/ci.yml"
     assert_success
 
-    pin="${output%%#*}"
-    pin="${pin##*@}"
-    pin="${pin//[[:space:]]/}"
-    [[ "$pin" =~ ^[0-9a-f]{40}$ ]]
+    pin="${output##*@}"
+    pin="${pin%%#*}"
+    pin="$(printf '%s' "$pin" | tr -d '[:space:]')"
+    run grep -Eq '^[0-9a-f]{40}$' <<< "$pin"
+    assert_success
 }
 
 @test "no args exits 0" {
