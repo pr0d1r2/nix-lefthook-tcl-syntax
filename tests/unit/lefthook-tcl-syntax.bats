@@ -26,14 +26,16 @@ setup() {
 
 @test "CI guardrails workflow is pinned to a full commit SHA" {
     run awk '
-        /guardrails\.yml@/ {
+        /^[[:space:]]*uses:[[:space:]]*pr0d1r2\/set-and-setting\/\.github\/workflows\/guardrails\.yml@/ {
             count++
-            prefix = "    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@"
-            if (index($0, prefix) != 1) {
+            prefix = "pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@"
+            line = $0
+            sub(/^[[:space:]]*uses:[[:space:]]*/, "", line)
+            if (index(line, prefix) != 1) {
                 invalid = 1
                 next
             }
-            sha = substr($0, length(prefix) + 1)
+            sha = substr(line, length(prefix) + 1)
             split(sha, fields, /[[:space:]]+/)
             if (length(fields[1]) != 40 || fields[1] !~ /^[0-9a-f]+$/) {
                 invalid = 1
