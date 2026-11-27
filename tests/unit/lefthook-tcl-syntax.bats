@@ -25,28 +25,10 @@ setup() {
 }
 
 @test "CI guardrails workflow is pinned to a full commit SHA" {
-    run awk '
-        /guardrails\.yml@/ {
-            count++
-            prefix = "    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@"
-            if (index($0, prefix) != 1) {
-                invalid = 1
-                next
-            }
-            sha = substr($0, length(prefix) + 1)
-            split(sha, fields, /[[:space:]]+/)
-            if (length(fields[1]) != 40 || fields[1] !~ /^[0-9a-f]+$/) {
-                invalid = 1
-                next
-            }
-            suffix = substr(sha, length(fields[1]) + 1)
-            if (suffix !~ /^[[:space:]]*(#.*)?$/) {
-                invalid = 1
-            }
-        }
-        END { exit !(count == 1 && !invalid) }
-    ' "$REPO_ROOT/.github/workflows/ci.yml"
+    run grep -Ec '^    uses: pr0d1r2/set-and-setting/\.github/workflows/guardrails\.yml@[0-9a-f]{40}([[:space:]]+#.*)?$' \
+        "$REPO_ROOT/.github/workflows/ci.yml"
     assert_success
+    assert_output 1
 }
 
 @test "no args exits 0" {
