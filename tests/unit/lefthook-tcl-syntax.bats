@@ -28,7 +28,19 @@ setup() {
     run awk '
         /guardrails\.yml@/ {
             count++
-            if ($0 !~ /^    uses: pr0d1r2\/set-and-setting\/\.github\/workflows\/guardrails\.yml@[0-9a-f]{40}([[:space:]]+#.*)?$/) {
+            prefix = "    uses: pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@"
+            if (index($0, prefix) != 1) {
+                invalid = 1
+                next
+            }
+            sha = substr($0, length(prefix) + 1)
+            split(sha, fields, /[[:space:]]+/)
+            if (length(fields[1]) != 40 || fields[1] !~ /^[0-9a-f]+$/) {
+                invalid = 1
+                next
+            }
+            suffix = substr(sha, length(fields[1]) + 1)
+            if (suffix !~ /^[[:space:]]*(#.*)?$/) {
                 invalid = 1
             }
         }
