@@ -54,3 +54,14 @@ teardown() {
     source "$TEST_TEMP/dev.sh"
     assert [ ! -f "$LEFTHOOK_LOG" ]
 }
+
+@test "flake lock pins safe ruby and brotli versions" {
+    root="$BATS_TEST_DIRNAME/../.."
+    run nix eval --raw --impure --expr "(builtins.getFlake (toString $root)).inputs.nixpkgs.legacyPackages.aarch64-linux.ruby.version"
+    assert_success
+    assert_output "3.4.12"
+
+    run nix eval --raw --impure --expr "(builtins.getFlake (toString $root)).inputs.nixpkgs.legacyPackages.aarch64-linux.brotli.version"
+    assert_success
+    assert_output "1.2.1"
+}
