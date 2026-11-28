@@ -39,6 +39,10 @@ setup() {
                     next
                 }
                 sub(/"[[:space:]]*(#.*)?$/, "", line)
+                if (line ~ /[[:space:]]/) {
+                    invalid = 1
+                    next
+                }
             }
             if (index(line, prefix) != 1) {
                 invalid = 1
