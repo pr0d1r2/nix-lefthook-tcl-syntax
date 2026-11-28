@@ -22,42 +22,9 @@ setup() {
 }
 
 @test "CI guardrails workflow is pinned to a full commit SHA" {
-    run awk '
-        /^[[:space:]]*uses:[[:space:]]*"?pr0d1r2\/set-and-setting\/\.github\/workflows\/guardrails\.yml@/ {
-            count++
-            prefix = "pr0d1r2/set-and-setting/.github/workflows/guardrails.yml@"
-            line = $0
-            sub(/^[[:space:]]*uses:[[:space:]]*/, "", line)
-            quoted = line ~ /^"/
-            sub(/^"/, "", line)
-            if (quoted) {
-                if (line !~ /"[[:space:]]*(#.*)?$/) {
-                    invalid = 1
-                    next
-                }
-                sub(/"[[:space:]]*(#.*)?$/, "", line)
-                if (line ~ /[[:space:]]/) {
-                    invalid = 1
-                    next
-                }
-            }
-            if (index(line, prefix) != 1) {
-                invalid = 1
-                next
-            }
-            sha = substr(line, length(prefix) + 1)
-            split(sha, fields, /[[:space:]]+/)
-            if (length(fields[1]) != 40 || fields[1] !~ /^[0-9a-f]+$/) {
-                invalid = 1
-                next
-            }
-            suffix = substr(sha, length(fields[1]) + 1)
-            if (suffix !~ /^[[:space:]]*(#.*)?$/) {
-                invalid = 1
-            }
-        }
-        END { exit !(count == 1 && !invalid) }
-    ' "$REPO_ROOT/.github/workflows/ci.yml"
+    run sh -c '
+        test "$(grep -Ec "^[[:space:]]*uses:[[:space:]]*\"?pr0d1r2/set-and-setting/\\.github/workflows/guardrails\\.yml@[0-9a-f]{40}\"?[[:space:]]*$" "$1")" -eq 1
+    ' sh "$REPO_ROOT/.github/workflows/ci.yml"
     assert_success
 }
 
