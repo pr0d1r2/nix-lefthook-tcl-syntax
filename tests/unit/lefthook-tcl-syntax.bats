@@ -1,9 +1,6 @@
 #!/usr/bin/env bats
 
-# Test THIS repository's package, not whatever `lefthook-tcl-syntax` the
-# dev shell or the caller's PATH happens to carry: the standard's shell has
-# no Tcl fragment, so without this the suite exercised a stale copy (or
-# nothing at all).
+# Test this repository's package, not a stale copy from the caller's PATH.
 setup_file() {
     TCL_SYNTAX_OUT="$(nix build "$BATS_TEST_DIRNAME/../..#default" --no-link --print-out-paths)"
     export TCL_SYNTAX_OUT
